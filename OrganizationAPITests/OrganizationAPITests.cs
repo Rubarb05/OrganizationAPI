@@ -33,7 +33,7 @@ namespace OrganizationAPITests
 		public void GetUsersTest()
 		{
 			OrganizationAPI.APICalls.OrganizationAPI externalAPI = new OrganizationAPI.APICalls.OrganizationAPI(_logger, _configuration);
-			Task<List<User>> users = externalAPI.GetUsersAsync();
+			Task<List<User>> users = externalAPI.GetUsersAsync(1);
 			users.Wait();
 
 			Assert.IsTrue(users.Result.Count > 0);
@@ -43,7 +43,7 @@ namespace OrganizationAPITests
 		public void GetPhonesTest()
 		{
 			OrganizationAPI.APICalls.OrganizationAPI externalAPI = new OrganizationAPI.APICalls.OrganizationAPI(_logger, _configuration);
-			Task<List<UserPhone>> userPhones = externalAPI.GetUserPhonesAsync();
+			Task<List<UserPhone>> userPhones = externalAPI.GetUserPhonesAsync(1, 1);
 			userPhones.Wait();
 
 			Assert.IsTrue(userPhones.Result.Count > 0);

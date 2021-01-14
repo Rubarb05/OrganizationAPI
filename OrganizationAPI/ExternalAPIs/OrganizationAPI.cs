@@ -12,7 +12,10 @@ namespace OrganizationAPI.APICalls
 	{
 		private readonly ILogger<OrganizationAPI> _logger;
 		private readonly IConfiguration _config;
+		
 		private readonly string _organizationBaseAPI;
+		private readonly string _usersEndpoint;
+		private readonly string _phonesEndpoint;
 
 		private static HttpClient _client;
 
@@ -24,6 +27,8 @@ namespace OrganizationAPI.APICalls
 
 			//pull base api from appSettings.
 			_organizationBaseAPI = _config.GetValue<string>("ConnectionStrings:OrganizationBaseAPI");
+			_usersEndpoint = _config.GetValue<string>("ConnectionStrings:UsersEndPoint");
+			_phonesEndpoint = _config.GetValue<string>("ConnectionStrings:UserPhonesEndPoint");
 		}
 
 		public async Task<List<Model.Organization>> GetOrganizationsAsync()
@@ -49,16 +54,16 @@ namespace OrganizationAPI.APICalls
 			return organizations;
 		}
 
-		public async Task<List<Model.User>> GetUsersAsync()
+		public async Task<List<Model.User>> GetUsersAsync(int organizationId)
 		{
 			List<Model.User> users = new List<Model.User>();
-			string userEndpoint = _config.GetValue<string>("ConnectionStrings:UsersEndPoint");
-			string apiEndpoint = _organizationBaseAPI + userEndpoint;
+			string organizationIdPath = string.Format("/{0}", organizationId);
+			string apiEndpoint = _organizationBaseAPI + organizationIdPath + _usersEndpoint;
 
 			_logger.LogInformation(apiEndpoint);
 
 			//Ensure the user api call is setup correctly
-			if (!string.IsNullOrEmpty(apiEndpoint) && !string.IsNullOrEmpty(userEndpoint))
+			if (!string.IsNullOrEmpty(apiEndpoint))
 			{
 				//API call for User Data
 				HttpResponseMessage response = await _client.GetAsync(apiEndpoint);
@@ -76,16 +81,18 @@ namespace OrganizationAPI.APICalls
 			return users;
 		}
 
-		public async Task<List<Model.UserPhone>> GetUserPhonesAsync()
+		public async Task<List<Model.UserPhone>> GetUserPhonesAsync(int organizationId, int userId)
 		{
 			List<Model.UserPhone> userPhones = new List<Model.UserPhone>();
-			string userPhoneEndpoint = _config.GetValue<string>("ConnectionStrings:UserPhonesEndPoint");
-			string apiEndpoint = _organizationBaseAPI + userPhoneEndpoint;
+			string organizationIdPath = string.Format("/{0}", organizationId);
+			string organizationPath = _organizationBaseAPI + organizationIdPath + _usersEndpoint;
+			string userIdPath = string.Format("/{0}", userId);
+			string apiEndpoint = organizationPath + userIdPath + _phonesEndpoint;
 
 			_logger.LogInformation(apiEndpoint);
 
-			//Ensure the user api call is setup correctly
-			if (!string.IsNullOrEmpty(apiEndpoint) && !string.IsNullOrEmpty(userPhoneEndpoint))
+			//Ensure the api call is setup correctly
+			if (!string.IsNullOrEmpty(apiEndpoint))
 			{
 				//API call for Phone Data
 				HttpResponseMessage response = await _client.GetAsync(apiEndpoint);
