@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using OrganizationAPI.Controllers;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace OrganizationAPI.APICalls
 {
 	public class OrganizationAPI
 	{
-		private readonly ILogger<OrganizationAPI> _logger;
+		private readonly ILogger<OrganizationPhoneController> _logger;
 		private readonly IConfiguration _config;
 		
 		private readonly string _organizationBaseAPI;
@@ -19,7 +20,7 @@ namespace OrganizationAPI.APICalls
 
 		private static HttpClient _client;
 
-		public OrganizationAPI(ILogger<OrganizationAPI> logger, IConfiguration config)
+		public OrganizationAPI(ILogger<OrganizationPhoneController> logger, IConfiguration config)
 		{
 			_logger = logger;
 			_config = config;
@@ -50,6 +51,10 @@ namespace OrganizationAPI.APICalls
 					_logger.LogInformation(responseString);
 					_logger.LogInformation(organizations.Count().ToString());
 				}
+				else
+				{
+					_logger.LogError("Response came back unsuccessful");
+				}
 			}
 			return organizations;
 		}
@@ -75,6 +80,10 @@ namespace OrganizationAPI.APICalls
 					users = JsonConvert.DeserializeObject<List<Model.User>>(responseString);
 					_logger.LogInformation(responseString);
 					_logger.LogInformation(users.Count().ToString());
+				}
+				else
+				{
+					_logger.LogError("Response came back unsuccessful");
 				}
 			}
 
@@ -104,6 +113,10 @@ namespace OrganizationAPI.APICalls
 					userPhones = JsonConvert.DeserializeObject<List<Model.UserPhone>>(responseString);
 					_logger.LogInformation(responseString);
 					_logger.LogInformation(userPhones.Count().ToString());
+				}
+				else
+				{
+					_logger.LogError("Response came back unsuccessful");
 				}
 			}
 

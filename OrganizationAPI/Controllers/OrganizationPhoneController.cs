@@ -27,7 +27,7 @@ namespace OrganizationAPI.Controllers
 		public async Task<string> GetAsync()
 		{
 			List<OrganizationPhone> phoneSummary = new List<OrganizationPhone>();
-			APICalls.OrganizationAPI organizationAPI = new APICalls.OrganizationAPI(new Logger<APICalls.OrganizationAPI>(new LoggerFactory()), _config);
+			APICalls.OrganizationAPI organizationAPI = new APICalls.OrganizationAPI(_logger, _config);
 
 			//Make the 3 api calls.
 			List<Model.Organization> organizations = await organizationAPI.GetOrganizationsAsync();
